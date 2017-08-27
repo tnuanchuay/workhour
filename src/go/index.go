@@ -30,11 +30,12 @@ func main(){
 
 	mongo.SetMode(mgo.Monotonic, true)
 
-	router.GET("/version", func (ctx *fasthttp.RequestCtx){
+	router.GET("/api/version", func (ctx *fasthttp.RequestCtx){
 		ctx.WriteString(version)
 	})
 
-	router.POST("/auth", func(ctx *fasthttp.RequestCtx) {
+	router.POST("/api/auth", func(ctx *fasthttp.RequestCtx) {
+		fmt.Println("auth")
 		shagen := sha512.New()
 		preToken := ctx.FormValue("pre-token")
 		em := fmt.Sprintf("%s", preToken)
@@ -69,16 +70,15 @@ func main(){
 		}
 	})
 
-	router.POST("/work", func(ctx *fasthttp.RequestCtx) {
-		fmt.Println("hi")
-		session := fmt.Sprintf("%x", ctx.Request.Header.Peek("SESSIONID"))
+	router.POST("/api/work", func(ctx *fasthttp.RequestCtx) {
+		fmt.Println(string(ctx.Response.Header.Header()))
+		session := string(ctx.Request.Header.Cookie("SESSIONID"))
 		startTime := string(ctx.FormValue("startTime"))
 		endTime := string(ctx.FormValue("endTime"))
 		c := db.C("work")
 		err := c.Insert(bson.M{"session": session, "startTime": startTime, "endTime": endTime})
 
 		if err != nil {
-
 			fmt.Println(err.Error())
 			ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 			return
@@ -96,11 +96,15 @@ func main(){
 		}
 	})
 
+	router.GET("/", func (ctx *fasthttp.RequestCtx){
+		ctx.SendFile("./../template/build/index.html")
+	})
+
+	router.ServeFiles("/static/*filepath", "./../template/build/static")
+
 	var cors Middleware
 	cors.Next = router.Handler
 	cors.Function = func(m *Middleware, ctx *fasthttp.RequestCtx){
-		ctx.Response.Header.Add("Access-Control-Allow-Origin", "*")
-		fmt.Println(string(ctx.Path()))
 		m.Next(ctx)
 	}
 

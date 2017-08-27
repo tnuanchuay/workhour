@@ -24,16 +24,16 @@ class Home extends Component {
             let data = new FormData()
             data.append("startTime", moment(this.state.startTime).toString())
             data.append("endTime", moment(new Date()).toString())
-            fetch("http://localhost/work",{
+            alert(this.cookies.get("SESSIONID"))
+            fetch("api/work",{
                 method:"POST",
                 body:data,
-                headers:{
-                    "SESSIONID" : this.cookies.get('SESSIONID')
-                }
+                credentials: 'include'
             }).then(() => {
                 clearInterval(this.state.runingInterval)
                 state.runingInterval = null
             }).catch((err) => {
+                console.log(err)
                 alert(err)
             })
         }
