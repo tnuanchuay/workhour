@@ -24,7 +24,6 @@ class Home extends Component {
             let data = new FormData()
             data.append("startTime", moment(this.state.startTime).toString())
             data.append("endTime", moment(new Date()).toString())
-            alert(this.cookies.get("SESSIONID"))
             fetch("api/work",{
                 method:"POST",
                 body:data,

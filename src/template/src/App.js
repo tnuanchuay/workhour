@@ -42,7 +42,7 @@ class App extends Component {
             {this.redirectIfNoSession()}
             <Route exact path="/login" component={() => <Login cookies={this.cookies} onLogin={this.onLogin(this)}/>} />
             <Route exact path="/" component={() => <Home cookies={this.cookies}/>}  />
-            <Route exact path="/stat" component={() => (<div>Reviews
+            <Route exact path="/stat" component={() => (<div>Stat
             asdasd
             asd
             asdasdas\
