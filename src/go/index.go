@@ -20,11 +20,11 @@ func main(){
 		mongo, db := createMongoSession()
 		defer mongo.Close()
 
-		shagen := sha512.New()
+		SHA := sha512.New()
 		preToken := ctx.FormValue("pre-token")
 		em := fmt.Sprintf("%s", preToken)
-		shagen.Write([]byte(em))
-		token := fmt.Sprintf("%x", shagen.Sum(nil))
+		SHA.Write([]byte(em))
+		token := fmt.Sprintf("%x", SHA.Sum(nil))
 
 		sessionCollection := db.C("session")
 		var sessionData map[string]interface{}
@@ -35,7 +35,7 @@ func main(){
 
 		b, err := json.Marshal(map[string]interface{}{
 			"token" : token,
-			"cookie": sessionData["cookie"].(string),
+			"cookie": sessionData["cookie"].(interface{}),
 		})
 		if err != nil {
 			fmt.Println(err.Error())
@@ -61,6 +61,19 @@ func main(){
 		}else{
 			ctx.Write(b)
 		}
+	})
+
+	router.POST("/api", func(ctx *fasthttp.RequestCtx){
+		res, err := json.Marshal(map[string]string{
+			"status":"ok",
+		})
+
+		if err != nil{
+			log.Fatal(err)
+			return
+		}
+
+		ctx.Write(res)
 	})
 
 	router.POST("/api/work", func(ctx *fasthttp.RequestCtx) {
@@ -102,7 +115,9 @@ func main(){
 	router.ServeFiles("/static/*filepath", "./../template/build/static")
 
 	router.NotFound = func(ctx *fasthttp.RequestCtx) {
-		ctx.SendFile("./../template/build/index.html")
+		path := string(ctx.Path())
+		fullPathToRedirect := fmt.Sprintf("/#!%s", path)
+		ctx.Redirect(fullPathToRedirect, 301)
 	}
 
 	var session Middleware

@@ -5,6 +5,7 @@ class Login extends Component {
 
     constructor(props) {
         super(props)
+        this.cookie = props.cookies
         this.state = { email: "", password: "", token: undefined }
     }
 
@@ -21,8 +22,15 @@ class Login extends Component {
             }).then((response) => response.json())
             .then((json) => {
                 this.props.onLogin(json.token)
+                this.restoreSession(json.cookie)
             })
             .catch((err) => alert(err))
+    }
+
+    restoreSession(c){
+        Object.keys(c).forEach((key) => {
+            this.cookie.set(key, c[key])
+        })
     }
 
     render() {
