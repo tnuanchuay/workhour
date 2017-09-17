@@ -7,10 +7,13 @@ import (
 	"log"
 	"encoding/json"
 	"crypto/sha512"
+	"strconv"
 )
 
 func main(){
 	router := fasthttprouter.New()
+
+	router.GET("/api/average", API_AverageWorkHourPerWeek)
 
 	router.GET("/api/version", func (ctx *fasthttp.RequestCtx){
 		ctx.WriteString(version)
@@ -26,23 +29,6 @@ func main(){
 		SHA.Write([]byte(em))
 		token := fmt.Sprintf("%x", SHA.Sum(nil))
 
-		sessionCollection := db.C("session")
-		var sessionData map[string]interface{}
-		sessionCollection.Find(
-			map[string]string{
-				"sessionId" : token,
-			}).One(&sessionData)
-
-		b, err := json.Marshal(map[string]interface{}{
-			"token" : token,
-			"cookie": sessionData["cookie"].(interface{}),
-		})
-		if err != nil {
-			fmt.Println(err.Error())
-			ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
-			return
-		}
-
 		c := db.C("user")
 		count, err := c.Find(map[string]string{"token":token }).Count()
 		if err != nil{
@@ -53,6 +39,31 @@ func main(){
 
 		if count == 0 {
 			err = c.Insert(map[string]string{"token":token })
+		}
+
+		sessionCollection := db.C("session")
+		var sessionData map[string]interface{}
+		sessionCollection.Find(
+			map[string]string{
+				"sessionId" : token,
+			}).One(&sessionData)
+
+		var b []byte
+		if sessionData != nil{
+			b, err = json.Marshal(map[string]interface{}{
+				"token" : token,
+				"cookie": sessionData["cookie"].(interface{}),
+			})
+
+			if err != nil {
+				fmt.Println(err.Error())
+				ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
+				return
+			}
+		}else{
+			b, err = json.Marshal(map[string]interface{}{
+				"token" : token,
+			})
 		}
 
 		if err != nil{
@@ -84,10 +95,12 @@ func main(){
 		startTime := string(ctx.FormValue("startTime"))
 		endTime := string(ctx.FormValue("endTime"))
 		c := db.C("work")
-		err := c.Insert(map[string]string{
+		st, _ := strconv.Atoi(startTime)
+		et, _ := strconv.Atoi(endTime)
+		err := c.Insert(map[string]interface{}{
 			"session": session,
-			"startTime": startTime,
-			"endTime": endTime,
+			"startTime": st,
+			"endTime": et,
 		})
 
 		if err != nil {

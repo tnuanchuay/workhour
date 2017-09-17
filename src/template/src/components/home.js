@@ -1,24 +1,80 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
-import moment from 'moment'
-
+import { Bar } from 'react-chartjs-2'
 const dateFormat = "YYYY MMMM Do YYYY"
 const timeFormat = "h:mm:ss a"
+
+const daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday"]
+
+let dataTemplate = {
+    labels: daylist,
+    responsive: true,
+    datasets: [{
+        label: 'Hours',
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 3
+    }]
+}
 
 class Home extends Component {
 
     constructor(props) {
         super(props)
         this.cookies = props.cookies
-
         let startTime = this.cookies.get("start")
-        this.state = { isRunning: startTime ? true : false,  }
+        this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0] }
         if (this.state.isRunning) {
             this.state.startTime = new Date(parseInt(startTime))
             this.state.runingInterval = setInterval(() => {
                 this.setState({})
             }, 1000)
         }
+    }
+
+    componentDidMount() {
+        fetch("api/average", {
+            method: "GET",
+            credentials: "include"
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                var data = json.data
+                var finalResult =
+                    [
+                        { data:0, count:0 },
+                        { data:0, count:0 },
+                        { data:0, count:0 },
+                        { data:0, count:0 },
+                        { data:0, count:0 },
+                        { data:0, count:0 },
+                        { data:0, count:0 },
+                    ]
+                data.map((value) => {
+                    let StartDate = new Date(value.StartTime)
+                    finalResult[StartDate.getDay()].data += (value.EndTime - value.StartTime)
+                    finalResult[StartDate.getDay()].count++
+                })
+
+                finalResult = finalResult.map((value => value.data / 3600000 / value.count))
+                console.log(finalResult)
+                this.setState({ data: finalResult })
+            })
+            .catch((err) => alert(err))
     }
 
     run() {
@@ -58,65 +114,37 @@ class Home extends Component {
     }
 
     render() {
-        console.log(this.state.startTime)
         // format a string result
         let now = new Date();
         let diff = this.state.startTime == undefined ? 0 : Math.floor((now - new Date(this.state.startTime)) / 1000)
         let sec = this.state.startTime == undefined ? 0 : Math.floor(diff % 60)
-        let min = this.state.startTime == undefined ? 0 : Math.floor((diff / 60)%60)
+        let min = this.state.startTime == undefined ? 0 : Math.floor((diff / 60) % 60)
         let hour = this.state.startTime == undefined ? 0 : Math.floor(diff / 3600)
         let s = `
-        ${(hour).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}:${(min).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}:${(sec).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}`
+        ${(hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(min).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(sec).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}`
+
+        dataTemplate.datasets[0].data = this.state.data
+
         return (
             <div className="container ">
                 <div className="row justify-content-md-center">
                     <div className="col">
+                        <div className="row text-center h1">
+                            You are working for
+                            {s}
+                        </div>
                         <div className="row text-center">
-                            <h2>
-                                You are working for
-                            </h2>
-                        </div>
-
-                        <div className="row">
-                            <h1>
-                                {s}
-                            </h1>
-                        </div>
-
-                        <div className="row">
                             <button onClick={this.run.bind(this)} className={"btn btn-lg " + (this.state.isRunning ? "btn-success" : "btn-info")}>
                                 {this.state.isRunning ? "I'm going home" : "I'm at the office"}
                             </button>
                         </div>
                     </div>
+                    <div className="col chart-container" Style="position: relative; height:40vh; width:80vw">
+                        <Bar data={dataTemplate} />
+                    </div>
                 </div>
             </div >
         )
-    }
-}
-
-class Clock extends Component {
-    constructor(props) {
-        super(props)
-        this.state = { time: moment() }
-        this.Start()
-    }
-
-    Start() {
-        setInterval(() => {
-            this.setState({ time: moment() })
-        }, 1000)
-    }
-
-    render() {
-        return (<h1>
-            <div className="row">
-                {this.state.time.format(dateFormat)}
-            </div>
-            <div className="row">
-                {this.state.time.format(timeFormat)}
-            </div>
-        </h1>)
     }
 }
 

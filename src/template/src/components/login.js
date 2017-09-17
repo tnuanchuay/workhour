@@ -14,7 +14,7 @@ class Login extends Component {
         let email = this.state.email
         let password = this.state.password
         let data = new FormData()
-        data.append("pre-token", sha1(email+password))
+        data.append("pre-token", sha1(email + password))
         fetch('api/auth',
             {
                 method: "POST",
@@ -22,12 +22,13 @@ class Login extends Component {
             }).then((response) => response.json())
             .then((json) => {
                 this.props.onLogin(json.token)
-                this.restoreSession(json.cookie)
+                if (json.cookie != undefined)
+                    this.restoreSession(json.cookie)
             })
             .catch((err) => alert(err))
     }
 
-    restoreSession(c){
+    restoreSession(c) {
         Object.keys(c).forEach((key) => {
             this.cookie.set(key, c[key])
         })
