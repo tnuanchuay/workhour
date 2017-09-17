@@ -57,6 +57,8 @@ class Home extends Component {
             .then((response) => response.json())
             .then((json) => {
                 var data = json.data
+                if(data === null)
+                    data = []
                 var finalResult =
                     [
                         { data: 0, count: 0 },
@@ -71,7 +73,6 @@ class Home extends Component {
                     let StartDate = new Date(value.StartTime)
                     finalResult[StartDate.getDay()].data += (value.EndTime - value.StartTime)
                     finalResult[StartDate.getDay()].count++
-                    
                 })
 
                 finalResult = finalResult.map((value => Math.round(value.data / 3600000 / value.count * 100) / 100))
