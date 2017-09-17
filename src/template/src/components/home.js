@@ -70,7 +70,7 @@ class Home extends Component {
                     finalResult[StartDate.getDay()].count++
                 })
 
-                finalResult = finalResult.map((value => value.data / 3600000 / value.count))
+                finalResult = finalResult.map((value => Math.round(value.data / 3600000 / value.count * 100) / 100))
                 console.log(finalResult)
                 this.setState({ data: finalResult })
             })
@@ -129,17 +129,19 @@ class Home extends Component {
             <div className="container ">
                 <div className="row justify-content-md-center">
                     <div className="col">
-                        <div className="row text-center h1">
+                        <div className="text-center h1">
                             You are working for
+                        </div>
+                        <div className="text-center h1">
                             {s}
                         </div>
-                        <div className="row text-center">
+                        <div className="text-center">
                             <button onClick={this.run.bind(this)} className={"btn btn-lg " + (this.state.isRunning ? "btn-success" : "btn-info")}>
                                 {this.state.isRunning ? "I'm going home" : "I'm at the office"}
                             </button>
                         </div>
                     </div>
-                    <div className="col chart-container" Style="position: relative; height:40vh; width:80vw">
+                    <div className="col chart-container">
                         <Bar data={dataTemplate} />
                     </div>
                 </div>
