@@ -35,7 +35,7 @@ class Home extends Component {
         super(props)
         this.cookies = props.cookies
         let startTime = this.cookies.get("start")
-        this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0] }
+        this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session:props.session }
         if (this.state.isRunning) {
             this.setState({ startTime: new Date(parseInt(startTime, 10)) })
             this.setState({
@@ -47,6 +47,9 @@ class Home extends Component {
     }
 
     componentDidMount() {
+        if(this.state.session === undefined)
+            return
+
         fetch("api/average", {
             method: "GET",
             credentials: "include"
@@ -68,6 +71,7 @@ class Home extends Component {
                     let StartDate = new Date(value.StartTime)
                     finalResult[StartDate.getDay()].data += (value.EndTime - value.StartTime)
                     finalResult[StartDate.getDay()].count++
+                    
                 })
 
                 finalResult = finalResult.map((value => Math.round(value.data / 3600000 / value.count * 100) / 100))
@@ -78,6 +82,9 @@ class Home extends Component {
     }
 
     run() {
+        if(this.state.session === undefined)
+            return <div/>
+
         let state = {}
         if (!this.state.isRunning) {
             state.startTime = new Date()
