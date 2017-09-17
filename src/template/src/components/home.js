@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
 import { Bar } from 'react-chartjs-2'
+import time from './../utils/time.js'
 
 const daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday"]
 
@@ -35,7 +36,7 @@ class Home extends Component {
         super(props)
         this.cookies = props.cookies
         let startTime = this.cookies.get("start")
-        this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session:props.session }
+        this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session: props.session }
         if (this.state.isRunning) {
             this.setState({ startTime: new Date(parseInt(startTime, 10)) })
             this.setState({
@@ -47,7 +48,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        if(this.state.session === undefined)
+        if (this.state.session === undefined)
             return
 
         fetch("api/average", {
@@ -56,35 +57,48 @@ class Home extends Component {
         })
             .then((response) => response.json())
             .then((json) => {
-                var data = json.data
-                if(data === null)
+                let data = json.data
+                if (data === null)
                     data = []
-                var finalResult =
-                    [
-                        { data: 0, count: 0 },
-                        { data: 0, count: 0 },
-                        { data: 0, count: 0 },
-                        { data: 0, count: 0 },
-                        { data: 0, count: 0 },
-                        { data: 0, count: 0 },
-                        { data: 0, count: 0 },
-                    ]
-                data.forEach((value) => {
-                    let StartDate = new Date(value.StartTime)
-                    finalResult[StartDate.getDay()].data += (value.EndTime - value.StartTime)
-                    finalResult[StartDate.getDay()].count++
+
+                let workPerDate = []
+
+                data.forEach(value => {
+                    let startDate = new Date(value.StartTime)
+                    workPerDate[startDate.getDate()] = { diff: 0 }
+                    workPerDate[startDate.getDate()].diff += (value.EndTime - value.StartTime)
+                    workPerDate[startDate.getDate()].date = startDate
                 })
 
-                finalResult = finalResult.map((value => Math.round(value.data / 3600000 / value.count * 100) / 100))
-                console.log(finalResult)
-                this.setState({ data: finalResult })
+                let workPerWeek = [0, 0, 0, 0, 0, 0, 0]
+                let countPerWeek = [0, 0, 0, 0, 0, 0, 0]
+
+                workPerDate.forEach(value => {
+                    workPerWeek[value.date.getDay()] += value.diff
+                    countPerWeek[value.date.getDay()]++
+                })
+
+                workPerWeek = workPerWeek.map((value, index) => {
+                    return value / countPerWeek[index]
+                })
+
+                workPerWeek = workPerWeek.map((value => Math.round(value / 3600000 * 100) / 100))
+                let firstDateOfWeek = time.getFirstDateOfTheWeek()
+                let hourPerMonth = Math.round(workPerDate.reduce((sum, value) => sum + value.diff, 0) / 3600000 * 100) / 100
+                let hourPerWeek = Math.round(workPerDate.reduce((sum, value) => {
+                    if (firstDateOfWeek <= value.date)
+                        return sum + value.diff
+                    else
+                        return sum
+                }, 0) / 3600000 * 100) / 100
+                this.setState({ graph: workPerWeek, hourPerMonth: hourPerMonth, hourPerWeek:hourPerWeek })
             })
             .catch((err) => alert(err))
     }
 
     run() {
-        if(this.state.session === undefined)
-            return <div/>
+        if (this.state.session === undefined)
+            return <div />
 
         let state = {}
         if (!this.state.isRunning) {
@@ -131,12 +145,11 @@ class Home extends Component {
         let s = `
         ${(hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(min).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(sec).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}`
 
-        dataTemplate.datasets[0].data = this.state.data
+        dataTemplate.datasets[0].data = this.state.graph
 
         return (
             <div className="container ">
                 <div className="row justify-content-md-center">
-
                     <div className="col my-5">
                         <div className="text-center h1">
                             You are working for
@@ -153,6 +166,24 @@ class Home extends Component {
 
                     <div className="col chart-container my-5">
                         <Bar data={dataTemplate} />
+                    </div>
+                </div>
+                <div className="row justify-content-md-center">
+                    <div className="col my-5">
+                        <div className="text-center h3">
+                            Work hour for this Week
+                        </div>
+                        <div className="text-center clock">
+                            {this.state.hourPerWeek ? this.state.hourPerWeek : 0} hr
+                        </div>
+                    </div>
+                    <div className="col my-5">
+                        <div className="text-center h3">
+                            Work hour for this Month
+                        </div>
+                        <div className="text-center clock">
+                            {this.state.hourPerMonth ? this.state.hourPerMonth : 0} hr
+                        </div>
                     </div>
                 </div>
             </div >
