@@ -37,10 +37,12 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0] }
         if (this.state.isRunning) {
-            this.setState({startTime : new Date(parseInt(startTime, 10))})
-            this.setState({runingInterval:setInterval(() => {
-                this.setState({})
-            }, 1000)})
+            this.setState({ startTime: new Date(parseInt(startTime, 10)) })
+            this.setState({
+                runingInterval: setInterval(() => {
+                    this.setState({})
+                }, 1000)
+            })
         }
     }
 
@@ -54,13 +56,13 @@ class Home extends Component {
                 var data = json.data
                 var finalResult =
                     [
-                        { data:0, count:0 },
-                        { data:0, count:0 },
-                        { data:0, count:0 },
-                        { data:0, count:0 },
-                        { data:0, count:0 },
-                        { data:0, count:0 },
-                        { data:0, count:0 },
+                        { data: 0, count: 0 },
+                        { data: 0, count: 0 },
+                        { data: 0, count: 0 },
+                        { data: 0, count: 0 },
+                        { data: 0, count: 0 },
+                        { data: 0, count: 0 },
+                        { data: 0, count: 0 },
                     ]
                 data.forEach((value) => {
                     let StartDate = new Date(value.StartTime)
@@ -126,11 +128,12 @@ class Home extends Component {
         return (
             <div className="container ">
                 <div className="row justify-content-md-center">
-                    <div className="col">
+
+                    <div className="col my-5">
                         <div className="text-center h1">
                             You are working for
                         </div>
-                        <div className="text-center h1">
+                        <div className="text-center clock">
                             {s}
                         </div>
                         <div className="text-center">
@@ -139,7 +142,8 @@ class Home extends Component {
                             </button>
                         </div>
                     </div>
-                    <div className="col chart-container">
+
+                    <div className="col chart-container my-5">
                         <Bar data={dataTemplate} />
                     </div>
                 </div>

@@ -6,6 +6,11 @@ export default {
             url: "/"
         },
         {
+            name: "Calendar",
+            isActive: false,
+            url: "/calendar"
+        },
+        {
             name: "Statistic",
             isActive: false,
             url: "/stat"
