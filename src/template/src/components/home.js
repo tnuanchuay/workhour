@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
 import { Bar } from 'react-chartjs-2'
-const dateFormat = "YYYY MMMM Do YYYY"
-const timeFormat = "h:mm:ss a"
 
 const daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday"]
 
@@ -39,10 +37,10 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0] }
         if (this.state.isRunning) {
-            this.state.startTime = new Date(parseInt(startTime))
-            this.state.runingInterval = setInterval(() => {
+            this.setState({startTime : new Date(parseInt(startTime, 10))})
+            this.setState({runingInterval:setInterval(() => {
                 this.setState({})
-            }, 1000)
+            }, 1000)})
         }
     }
 
@@ -64,7 +62,7 @@ class Home extends Component {
                         { data:0, count:0 },
                         { data:0, count:0 },
                     ]
-                data.map((value) => {
+                data.forEach((value) => {
                     let StartDate = new Date(value.StartTime)
                     finalResult[StartDate.getDay()].data += (value.EndTime - value.StartTime)
                     finalResult[StartDate.getDay()].count++
@@ -116,10 +114,10 @@ class Home extends Component {
     render() {
         // format a string result
         let now = new Date();
-        let diff = this.state.startTime == undefined ? 0 : Math.floor((now - new Date(this.state.startTime)) / 1000)
-        let sec = this.state.startTime == undefined ? 0 : Math.floor(diff % 60)
-        let min = this.state.startTime == undefined ? 0 : Math.floor((diff / 60) % 60)
-        let hour = this.state.startTime == undefined ? 0 : Math.floor(diff / 3600)
+        let diff = this.state.startTime === undefined ? 0 : Math.floor((now - new Date(this.state.startTime)) / 1000)
+        let sec = this.state.startTime === undefined ? 0 : Math.floor(diff % 60)
+        let min = this.state.startTime === undefined ? 0 : Math.floor((diff / 60) % 60)
+        let hour = this.state.startTime === undefined ? 0 : Math.floor(diff / 3600)
         let s = `
         ${(hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(min).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(sec).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}`
 

@@ -22,7 +22,7 @@ class Login extends Component {
             }).then((response) => response.json())
             .then((json) => {
                 this.props.onLogin(json.token)
-                if (json.cookie != undefined)
+                if (json.cookie !== undefined)
                     this.restoreSession(json.cookie)
             })
             .catch((err) => alert(err))
