@@ -38,12 +38,10 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session: props.session }
         if (this.state.isRunning) {
-            this.setState({ startTime: new Date(parseInt(startTime, 10)) })
-            this.setState({
-                runingInterval: setInterval(() => {
-                    this.setState({})
-                }, 1000)
-            })
+            this.state.startTime = new Date(parseInt(startTime, 10))
+            this.state.runingInterval = setInterval(() => {
+                this.setState({})
+            }, 1000)
         }
     }
 
@@ -91,7 +89,7 @@ class Home extends Component {
                     else
                         return sum
                 }, 0) / 3600000 * 100) / 100
-                this.setState({ graph: workPerWeek, hourPerMonth: hourPerMonth, hourPerWeek:hourPerWeek })
+                this.setState({ graph: workPerWeek, hourPerMonth: hourPerMonth, hourPerWeek: hourPerWeek })
             })
             .catch((err) => alert(err))
     }
@@ -150,17 +148,19 @@ class Home extends Component {
         return (
             <div className="container ">
                 <div className="row justify-content-md-center">
-                    <div className="col my-5">
-                        <div className="text-center h1">
-                            You are working for
-                        </div>
-                        <div className="text-center clock">
-                            {s}
-                        </div>
-                        <div className="text-center">
-                            <button onClick={this.run.bind(this)} className={"btn btn-lg " + (this.state.isRunning ? "btn-success" : "btn-info")}>
-                                {this.state.isRunning ? "I'm going home" : "I'm at the office"}
-                            </button>
+                    <div className="fill">
+                        <div className="col my-5">
+                            <div className="text-center h1">
+                                You are working for
+                            </div>
+                            <div className="text-center clock">
+                                {s}
+                            </div>
+                            <div className="text-center">
+                                <button onClick={this.run.bind(this)} className={"btn btn-lg " + (this.state.isRunning ? "btn-success" : "btn-info")}>
+                                    {this.state.isRunning ? "I'm going home" : "I'm at the office"}
+                                </button>
+                            </div>
                         </div>
                     </div>
 

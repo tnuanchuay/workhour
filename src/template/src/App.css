@@ -30,3 +30,8 @@ body {
 .clock{
   font-size: 600%;
 }
+
+.fill { 
+  min-height: 100%;
+  height: 100%;
+}
