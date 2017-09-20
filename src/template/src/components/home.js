@@ -57,6 +57,7 @@ class Home extends Component {
         })
             .then((response) => response.json())
             .then((json) => {
+                let today = new Date()
                 let data = json.data
                 if (data === null)
                     data = []
@@ -82,7 +83,7 @@ class Home extends Component {
                     return value / countPerWeek[index]
                 })
 
-                workPerWeek = workPerWeek.map((value => Math.round(value / 3600000 * 100) / 100))
+                workPerWeek = workPerWeek.map(value => Math.round(value / 3600000 * 100) / 100)
                 let firstDateOfWeek = time.getFirstDateOfTheWeek()
                 let hourPerMonth = Math.round(workPerDate.reduce((sum, value) => sum + value.diff, 0) / 3600000 * 100) / 100
                 let hourPerWeek = Math.round(workPerDate.reduce((sum, value) => {
@@ -91,7 +92,15 @@ class Home extends Component {
                     else
                         return sum
                 }, 0) / 3600000 * 100) / 100
-                this.setState({ graph: workPerWeek, hourPerMonth: hourPerMonth, hourPerWeek: hourPerWeek })
+
+                let thisDayWork = workPerDate.filter((value, index) => {
+                    if (value.date.getDay() === today.getDay())
+                        return value
+                }).reduce((sum, value, index, array) => {
+                    return sum += Math.round(value.diff / 3600000 * 100) / 100 / array.length
+                }, 0)
+
+                this.setState({ graph: workPerWeek, hourPerMonth: hourPerMonth, hourPerWeek: hourPerWeek, thisDayWork: thisDayWork })
             })
             .catch((err) => alert(err))
     }
@@ -150,7 +159,6 @@ class Home extends Component {
         return (
             <div className="container ">
                 <div className="row justify-content-md-center">
-                    <div className="fill">
                         <div className="col my-5">
                             <div className="text-center h1">
                                 You are working for
@@ -164,10 +172,14 @@ class Home extends Component {
                                 </button>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="col chart-container my-5">
-                        <Bar data={dataTemplate} />
+                    <div className="col my-5">
+                        <div className="text-center h3">
+                            This day in this month
+                        </div>
+                        <div className="text-center clock">
+                            {this.state.thisDayWork ? this.state.thisDayWork : 0} hr
+                        </div>
                     </div>
                 </div>
                 <div className="row justify-content-md-center">
