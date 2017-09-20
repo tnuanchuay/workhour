@@ -38,10 +38,12 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session: props.session }
         if (this.state.isRunning) {
-            this.state.startTime = new Date(parseInt(startTime, 10))
-            this.state.runingInterval = setInterval(() => {
-                this.setState({})
-            }, 1000)
+            this.setState({
+                startTime: new Date(parseInt(startTime, 10)),
+                runingInterval: setInterval(() => {
+                    this.setState({})
+                }, 1000)
+            })
         }
     }
 

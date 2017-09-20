@@ -1,21 +1,22 @@
 package main
 
 import (
-	"github.com/buaazp/fasthttprouter"
-	"github.com/valyala/fasthttp"
+	"crypto/sha512"
+	"encoding/json"
 	"fmt"
 	"log"
-	"encoding/json"
-	"crypto/sha512"
 	"strconv"
+
+	"github.com/buaazp/fasthttprouter"
+	"github.com/valyala/fasthttp"
 )
 
-func main(){
+func main() {
 	router := fasthttprouter.New()
 
 	router.GET("/api/average", API_AverageWorkHourPerWeek)
 
-	router.GET("/api/version", func (ctx *fasthttp.RequestCtx){
+	router.GET("/api/version", func(ctx *fasthttp.RequestCtx) {
 		ctx.WriteString(version)
 	})
 
@@ -30,28 +31,28 @@ func main(){
 		token := fmt.Sprintf("%x", SHA.Sum(nil))
 
 		c := db.C("user")
-		count, err := c.Find(map[string]string{"token":token }).Count()
-		if err != nil{
+		count, err := c.Find(map[string]string{"token": token}).Count()
+		if err != nil {
 			fmt.Println(err.Error())
 			ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 			return
 		}
 
 		if count == 0 {
-			err = c.Insert(map[string]string{"token":token })
+			err = c.Insert(map[string]string{"token": token})
 		}
 
 		sessionCollection := db.C("session")
 		var sessionData map[string]interface{}
 		sessionCollection.Find(
 			map[string]string{
-				"sessionId" : token,
+				"sessionId": token,
 			}).One(&sessionData)
 
 		var b []byte
-		if sessionData != nil{
+		if sessionData != nil {
 			b, err = json.Marshal(map[string]interface{}{
-				"token" : token,
+				"token":  token,
 				"cookie": sessionData["cookie"].(interface{}),
 			})
 
@@ -60,26 +61,26 @@ func main(){
 				ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 				return
 			}
-		}else{
+		} else {
 			b, err = json.Marshal(map[string]interface{}{
-				"token" : token,
+				"token": token,
 			})
 		}
 
-		if err != nil{
+		if err != nil {
 			fmt.Println(err.Error())
 			ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
-		}else{
+		} else {
 			ctx.Write(b)
 		}
 	})
 
-	router.POST("/api", func(ctx *fasthttp.RequestCtx){
+	router.POST("/api", func(ctx *fasthttp.RequestCtx) {
 		res, err := json.Marshal(map[string]string{
-			"status":"ok",
+			"status": "ok",
 		})
 
-		if err != nil{
+		if err != nil {
 			log.Fatal(err)
 			return
 		}
@@ -98,9 +99,9 @@ func main(){
 		st, _ := strconv.Atoi(startTime)
 		et, _ := strconv.Atoi(endTime)
 		err := c.Insert(map[string]interface{}{
-			"session": session,
+			"session":   session,
 			"startTime": st,
-			"endTime": et,
+			"endTime":   et,
 		})
 
 		if err != nil {
@@ -113,15 +114,15 @@ func main(){
 			"status": "ok",
 		})
 
-		if err != nil{
+		if err != nil {
 			fmt.Println(err.Error())
 			ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
-		}else{
+		} else {
 			ctx.Write(json)
 		}
 	})
 
-	router.GET("/", func (ctx *fasthttp.RequestCtx){
+	router.GET("/", func(ctx *fasthttp.RequestCtx) {
 		ctx.SendFile("./../template/build/index.html")
 	})
 
@@ -135,7 +136,7 @@ func main(){
 
 	var session Middleware
 	session.Next = router.Handler
-	session.Function = func(m *Middleware, ctx *fasthttp.RequestCtx){
+	session.Function = func(m *Middleware, ctx *fasthttp.RequestCtx) {
 		sessionId := ctx.Request.Header.Cookie("SESSIONID")
 
 		if string(sessionId) != "" {
@@ -144,7 +145,7 @@ func main(){
 
 			cookie := make(map[string]string)
 
-			ctx.Request.Header.VisitAllCookie(func(k, v []byte){
+			ctx.Request.Header.VisitAllCookie(func(k, v []byte) {
 				cookie[string(k)] = string(v)
 			})
 
@@ -162,6 +163,14 @@ func main(){
 		m.Next(ctx)
 	}
 
-	log.Fatal(fasthttp.ListenAndServe(port, session.Handler))
-}
+	var cors Middleware
+	cors.Next = router.Handler
+	cors.Function = func(m *Middleware, ctx *fasthttp.RequestCtx) {
+		ctx.Response.Header.Add("Access-Control-Allow-Origin", "http://localhost:3000")
+		ctx.Response.Header.Add("AllowCredentials", "true")
+		fmt.Println(string(ctx.Path()))
+		m.Next(ctx)
+	}
 
+	log.Fatal(fasthttp.ListenAndServe(port, cors.Handler))
+}
