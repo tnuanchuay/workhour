@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
+import config from '../config/appConfig'
 import { Bar } from 'react-chartjs-2'
 import time from './../utils/time.js'
 
@@ -51,7 +52,7 @@ class Home extends Component {
         if (this.state.session === undefined)
             return
 
-        fetch("api/average", {
+        fetch(config.api + "/api/average", {
             method: "GET",
             credentials: "include"
         })
@@ -125,7 +126,7 @@ class Home extends Component {
             let data = new FormData()
             data.append("startTime", this.state.startTime.getTime())
             data.append("endTime", new Date().getTime())
-            fetch("api/work", {
+            fetch(config.api + "/api/work", {
                 method: "POST",
                 body: data,
                 credentials: 'include'

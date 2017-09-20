@@ -167,7 +167,7 @@ func main() {
 	cors.Next = router.Handler
 	cors.Function = func(m *Middleware, ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Add("Access-Control-Allow-Origin", "http://localhost:3000")
-		ctx.Response.Header.Add("AllowCredentials", "true")
+		ctx.Response.Header.Add("Access-Control-Allow-Credentials", "true")
 		fmt.Println(string(ctx.Path()))
 		m.Next(ctx)
 	}
