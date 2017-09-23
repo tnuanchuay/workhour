@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import config from '../config/appConfig'
 import 'whatwg-fetch'
 import sha1 from 'sha1'
+import config from '../config/appConfig'
+
 class Login extends Component {
 
     constructor(props) {
@@ -16,7 +18,7 @@ class Login extends Component {
         let password = this.state.password
         let data = new FormData()
         data.append("pre-token", sha1(email + password))
-        fetch('http://localhost:8080/api/auth',
+        fetch(`${config.api}/api/auth`,
             {
                 method: "POST",
                 body: data
