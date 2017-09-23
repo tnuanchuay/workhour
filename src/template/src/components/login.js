@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import config from '../config/appConfig'
 import 'whatwg-fetch'
 import sha1 from 'sha1'
-import config from '../config/appConfig'
 
 class Login extends Component {
 
