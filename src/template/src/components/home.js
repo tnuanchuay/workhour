@@ -114,7 +114,7 @@ class Home extends Component {
         if (!this.state.isRunning) {
             state.startTime = new Date()
             this.cookies.set("start", state.startTime.getTime())
-            fetch("api", {
+            fetch(`${config.api}/api`, {
                 method: "POST",
                 credentials: "include"
             })
@@ -126,7 +126,7 @@ class Home extends Component {
             let data = new FormData()
             data.append("startTime", this.state.startTime.getTime())
             data.append("endTime", new Date().getTime())
-            fetch(config.api + "/api/work", {
+            fetch(`${config.api}/api/work`, {
                 method: "POST",
                 body: data,
                 credentials: 'include'
