@@ -6,31 +6,6 @@ import time from './../utils/time.js'
 
 const daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday"]
 
-let dataTemplate = {
-    labels: daylist,
-    responsive: true,
-    datasets: [{
-        label: 'Hours',
-        backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 3
-    }]
-}
-
 class Home extends Component {
 
     constructor(props) {
@@ -39,12 +14,10 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session: props.session }
         if (this.state.isRunning) {
-            this.setState({
-                startTime: new Date(parseInt(startTime, 10)),
-                runingInterval: setInterval(() => {
+                this.state.startTime =  new Date(parseInt(startTime, 10)),
+                this.state.runingInterval =  setInterval(() => {
                     this.setState({})
                 }, 1000)
-            })
         }
     }
 
@@ -154,8 +127,6 @@ class Home extends Component {
         let hour = this.state.startTime === undefined ? 0 : Math.floor(diff / 3600)
         let s = `
         ${(hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(min).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(sec).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}`
-
-        dataTemplate.datasets[0].data = this.state.graph
 
         return (
             <div className="container ">
