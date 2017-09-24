@@ -1,0 +1,10 @@
+{
+  "port":1234,
+  "addr":[
+    "139.59.102.146"
+  ],
+  "database":"workhour",
+  "timeout":60000000000,
+  "username":"test",
+  "password":"workhour123"
+}
