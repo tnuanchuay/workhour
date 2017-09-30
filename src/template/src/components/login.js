@@ -17,6 +17,7 @@ class Login extends Component {
         let password = this.state.password
         let data = new FormData()
         data.append("pre-token", sha1(email + password))
+        console.log(sha1(email + password))
         fetch(`${config.api}/api/auth`,
             {
                 method: "POST",

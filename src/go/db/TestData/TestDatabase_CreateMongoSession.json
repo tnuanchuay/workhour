@@ -1,6 +1,6 @@
 {
   "port":1234,
-  "addr":[
+  "addrs":[
     "139.59.102.146"
   ],
   "database":"workhour",
