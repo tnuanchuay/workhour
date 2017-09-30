@@ -73,6 +73,13 @@ func create_controller(appRepository AppRepository) (AppController) {
 }
 
 func create_route(router *fasthttprouter.Router, appController AppController) {
+	router.ServeFiles("/static/*filepath", "./../template/build/static")
+	router.NotFound = func(ctx *fasthttp.RequestCtx) {
+		path := string(ctx.Path())
+		fullPathToRedirect := fmt.Sprintf("/#!%s", path)
+		ctx.Redirect(fullPathToRedirect, 301)
+	}
+
 	router.POST("/api/auth", appController.AuthController.Auth)
 	router.GET("/api/average", appController.SAPIController.API_AverageWorkHourPerWeek)
 	router.POST("/api/work", appController.WorkController.WorkDone)
