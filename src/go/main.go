@@ -12,7 +12,7 @@ import (
 	"log"
 )
 
-const CONFIGFILE = "./config.json"
+const CONFIGFILE = "./config/config.json"
 
 func main() {
 	config := loadConfig(CONFIGFILE)
@@ -85,7 +85,7 @@ func create_route(router *fasthttprouter.Router, appController AppController) {
 		fullPathToRedirect := fmt.Sprintf("/#!%s", path)
 		ctx.Redirect(fullPathToRedirect, 301)
 	}
-	
+
 	router.ServeFiles("/static/*filepath", "./../template/build/static")
 	router.NotFound = func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
