@@ -38,7 +38,7 @@ class App extends Component {
       <CookiesProvider>
         <Router>
           <div>
-            <Navbar menu={Menu} brand={brand} session={this.state.session} />
+            <Navbar menu={Menu} brand={brand} session={this.state.session} cookies={this.cookies}/>
             {this.redirectIfNoSession()}
             <Route exact path="/login" component={() => <Login cookies={this.cookies} onLogin={this.onLogin(this)}/>} />
             <Route exact path="/" component={() => <Home cookies={this.cookies} session={this.state.session}/>}  />

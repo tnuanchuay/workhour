@@ -6,6 +6,24 @@ class Navbar extends Component {
         this.state = props.menu
         this.brand = props.brand
         this.session = props.session
+        this.cookies = props.cookies
+    }
+
+    logout() {
+        this.cookies.remove("SESSIONID")
+        window.location = "/"
+    }
+
+    logoutButton() {
+        if (this.cookies.get("SESSIONID") != undefined) {
+            return (<div className="navbar-nav ml-auto">
+                <li className="nav-item">
+                    <a className="nav-link active" role="button" onClick={this.logout.bind(this)}>Logout</a>
+                </li>
+            </div>)
+        }else{
+            return null
+        }
     }
 
     render() {
@@ -18,6 +36,7 @@ class Navbar extends Component {
                         {menu}
                     </ul>
                 </div>
+                {this.logoutButton()}
             </nav>
         )
     }
