@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"log"
 	"github.com/tspn/workhour/src/go/model"
-	"fmt"
 )
 
 type SAPIController struct{
@@ -23,11 +22,10 @@ func (this SAPIController) API_AverageWorkHourPerWeek(ctx *fasthttp.RequestCtx){
 	works := make([]model.Work, 0)
 
 	session  := this.WorkRepository.Database.DB.C("work")
-	fmt.Println(string(sessionId))
 
-	fmt.Println(session.Count())
-
-	err := session.Find(nil).Limit(30).All(&works)
+	err := session.Find(map[string]string{
+		"session":string(sessionId),
+	}).Limit(30).All(&works)
 
 	res, err := json.Marshal(map[string]interface{}{
 		"data" : works,
@@ -38,6 +36,5 @@ func (this SAPIController) API_AverageWorkHourPerWeek(ctx *fasthttp.RequestCtx){
 		ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 	}else{
 		ctx.Write(res)
-		fmt.Println(string(res))
 	}
 }
