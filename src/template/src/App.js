@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import Menu from './menu.js'
 import Home from './components/home.js'
 import Login from './components/login.js'
+import Statistics from './components/statistics.js'
 import { Cookies, CookiesProvider } from 'react-cookie'
 const brand = "workhour.life"
 
@@ -42,11 +43,7 @@ class App extends Component {
             {this.redirectIfNoSession()}
             <Route exact path="/login" component={() => <Login cookies={this.cookies} onLogin={this.onLogin(this)}/>} />
             <Route exact path="/" component={() => <Home cookies={this.cookies} session={this.state.session}/>}  />
-            <Route exact path="/stat" component={() => (<div>Stat
-            asdasd
-            asd
-            asdasdas\
-            asdasdaqwe</div>)} />
+            <Route exact path="/stat" component={() => <Statistics cookies={this.cookies} session={this.state.session}></Statistics>} />
           </div>
         </Router>
       </CookiesProvider>

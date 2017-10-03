@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
-import 'whatwg-fetch'
+import { Bar } from 'react-chartjs-2'
 
-let data = {
+let daylist = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+let graph = {
     labels: daylist,
     datasets: [{
         label: 'Hours',
@@ -21,7 +23,47 @@ let data = {
             'rgba(153, 102, 255, 1)',
             'rgba(255, 159, 64, 1)'
         ],
-        borderWidth: 1
+        borderWidth: 1,
+        data: []
     }]
 }
 
+export default class Graph extends React.Component {
+
+    constructor(props) {
+        super(props)
+        const { data } = props
+        this.state = {
+            data: data
+        }
+    }
+    
+    componentDidMount() {
+        graph.datasets[0].data = this.state.data || []
+        console.log('set cdm', graph.datasets)
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        console.log('nextprops', nextProps.data!== this.props.data)
+        if (nextProps.data && nextProps.data !== this.props.data) {
+            this.setState({
+                data: nextProps.data
+            })
+            graph.datasets[0].data = nextProps.data || []
+            console.log('set' , graph.datasets)
+        }
+    }
+    
+    render() {
+        return (
+            <Bar
+                data={graph}
+                width={100}
+                height={600}
+                options={{
+                    maintainAspectRatio: false
+                }}
+            />
+        )
+    }
+}
