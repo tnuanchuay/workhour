@@ -1,10 +1,8 @@
-import React, {Component} from 'react'
+import React from 'react'
 import { Bar } from 'react-chartjs-2'
 
-let daylist = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
 let graph = {
-    labels: daylist,
+    labels: [],
     datasets: [{
         label: 'Hours',
         backgroundColor: [
@@ -28,18 +26,20 @@ let graph = {
     }]
 }
 
-export default class Graph extends React.Component {
+export default class BarGraph extends React.Component {
 
     constructor(props) {
         super(props)
-        const { data } = props
+        const { data, labels } = props
         this.state = {
+            label: labels || [],
             data: data
         }
     }
     
     componentDidMount() {
         graph.datasets[0].data = this.state.data || []
+        graph.labels = this.state.label
         console.log('set cdm', graph.datasets)
     }
     
@@ -50,16 +50,16 @@ export default class Graph extends React.Component {
                 data: nextProps.data
             })
             graph.datasets[0].data = nextProps.data || []
-            console.log('set' , graph.datasets)
         }
     }
     
     render() {
+        console.log('state' , this.state)
         return (
             <Bar
-                data={graph}
+                data={this.state.data}
                 width={100}
-                height={600}
+                height={300}
                 options={{
                     maintainAspectRatio: false
                 }}

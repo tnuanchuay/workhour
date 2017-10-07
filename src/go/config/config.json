@@ -1,0 +1,10 @@
+{
+  "DBConfig":{
+    "Addrs" : ["139.59.102.146:27017"],
+    "Database" : "admin",
+    "Timeout" : 60000000000,
+    "Username" : "root",
+    "Password" : "2Yv-k-4BhJ3EfQ_?"
+  },
+  "Port":80
+}
