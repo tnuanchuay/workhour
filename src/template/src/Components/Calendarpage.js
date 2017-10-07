@@ -5,8 +5,12 @@ class CalendarPage extends Component {
         super(props)
     }
 
-    render(){
-        return (<Calendar />)
+    render() {
+        return (
+            <div className="container my-5">
+                <Calendar />
+            </div>
+        )
     }
 }
 

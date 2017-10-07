@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 
 class Calendar extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = { date: new Date() }
+    }
+
     leapYear(year) {
         return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0) ? 29 : 28;
     }
@@ -17,7 +23,7 @@ class Calendar extends Component {
     }
 
     getTableBody() {
-        let now = new Date();
+        let now = this.state.date
         let firstday = new Date(now.getFullYear(), now.getMonth())
         let elementOfDay = []
         for (let i = 0; i < this.getDayOfMonth(now); i++)
@@ -26,7 +32,7 @@ class Calendar extends Component {
         //build first week
         var needmore = firstday.getDay()
         for (let i = 0; i < needmore; i++) {
-            elementOfDay.unshift(<td key={0-(i+1)}>{this.getDayOfMonth()}</td>)
+            elementOfDay.unshift(<td key={0 - (i + 1)} className="">{this.getDayOfMonth(new Date(now.getFullYear(), now.getMonth()-1))-i}</td>)
         }
 
         let weekSeparation = []
@@ -46,34 +52,49 @@ class Calendar extends Component {
         return elementOfWeek
     }
 
+    getMonthName() {
+        var monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        return monthNames[this.state.date.getMonth()]
+    }
+
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="row container-fluid">
-                        <h1>
-                            October
-                        </h1>
-                        <div className="pull-right">
-                            October
-                        </div>
+            <div>
+                <div className="text-right">
+                    <div className="pull-right">
+                        <h1>{this.getMonthName()}</h1>
                     </div>
+                </div>
+                <div className="row">
                     <table className="table">
                         <thead>
                             <tr>
-                                <td><h5>Sun</h5></td>
-                                <td><h5>Mon</h5></td>
-                                <td><h5>Tue</h5></td>
-                                <td><h5>Wed</h5></td>
-                                <td><h5>Thu</h5></td>
-                                <td><h5>Fri</h5></td>
-                                <td><h5>Sat</h5></td>
+                                <td><div className="h5">Sun</div></td>
+                                <td><div className="h5">Mon</div></td>
+                                <td><div className="h5">Tue</div></td>
+                                <td><div className="h5">Wed</div></td>
+                                <td><div className="h5">Thu</div></td>
+                                <td><div className="h5">Fri</div></td>
+                                <td><div className="h5">Sat</div></td>
                             </tr>
                         </thead>
                         <tbody>
                             {this.getTableBody()}
                         </tbody>
                     </table>
+                </div>
+                <div className="row justify-content-md-center">
+                    <div className="text-center">
+                        <button className="btn btn-default" type="button">
+                            <i className="glyphicon glyphicon-align-left"></i>
+                        </button>
+                        <button className="btn btn-default" type="button">
+                            <i className="glyphicon glyphicon-align-left"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         )
