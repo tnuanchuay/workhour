@@ -15,7 +15,7 @@ class Navbar extends Component {
     }
 
     logoutButton() {
-        if (this.cookies.get("SESSIONID") != undefined) {
+        if (this.cookies.get("SESSIONID") !== undefined) {
             return (<div className="navbar-nav ml-auto">
                 <li className="nav-item">
                     <a className="nav-link active" role="button" onClick={this.logout.bind(this)}>Logout</a>

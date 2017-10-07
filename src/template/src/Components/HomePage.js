@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
 import config from '../config/appConfig'
-import { Bar } from 'react-chartjs-2'
 import time from './../utils/time.js'
-
-const daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday"]
 
 class Home extends Component {
 
@@ -14,7 +11,7 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session: props.session }
         if (this.state.isRunning) {
-                this.state.startTime =  new Date(parseInt(startTime, 10)),
+                this.state.startTime =  new Date(parseInt(startTime, 10))
                 this.state.runingInterval =  setInterval(() => {
                     this.setState({})
                 }, 1000)
@@ -70,6 +67,7 @@ class Home extends Component {
                 let thisDayWork = workPerDate.filter((value, index) => {
                     if (value.date.getDay() === today.getDay())
                         return value
+                    return undefined
                 }).reduce((sum, value, index, array) => {
                     return sum += Math.round(value.diff / 3600000 * 100) / 100 / array.length
                 }, 0)
