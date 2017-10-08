@@ -14,11 +14,13 @@ type AuthController struct{
 	SessionRepository	repository.SessionRepository
 }
 
-func (AuthController) Create(userRepository repository.UserRepository, sessionRepository repository.SessionRepository) *AuthController{
-	return &AuthController{
+func (AuthController) Create(userRepository repository.UserRepository, sessionRepository repository.SessionRepository, logPath string) *AuthController{
+	instance :=  &AuthController{
 		UserRepository:userRepository,
 		SessionRepository:sessionRepository,
 	}
+	instance.Logger.Path = logPath
+	return instance
 }
 
 func (this *AuthController) Auth(ctx *fasthttp.RequestCtx){
@@ -26,7 +28,7 @@ func (this *AuthController) Auth(ctx *fasthttp.RequestCtx){
 	cc := this.UserRepository.Collection
 	count, err := cc.Find(map[string]string{"token": token}).Count()
 	if err != nil {
-		fmt.Println(err.Error())
+		this.Logger.Error(err.Error())
 		ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 		return
 	}
@@ -50,7 +52,7 @@ func (this *AuthController) Auth(ctx *fasthttp.RequestCtx){
 		})
 
 		if err != nil {
-			fmt.Println(err.Error())
+			this.Logger.Error(err.Error())
 			ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 			return
 		}
@@ -61,7 +63,7 @@ func (this *AuthController) Auth(ctx *fasthttp.RequestCtx){
 	}
 
 	if err != nil {
-		fmt.Println(err.Error())
+		this.Logger.Error(err.Error())
 		ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 	} else {
 		ctx.Write(b)

@@ -5,6 +5,6 @@ import (
 )
 
 type BaseController struct{
-	logger	logger.Logger
+	Logger	logger.Logger
 }
 

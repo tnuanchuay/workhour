@@ -125,8 +125,8 @@ func TestLogger_Info(t *testing.T) {
 func TestLogger_Create(t *testing.T) {
 	logger := Logger{}.Create(filename)
 
-	if logger.path != filename{
-		t.Error("Log file path should be ./test.txt")
+	if logger.Path != filename{
+		t.Error("Log file Path should be ./test.txt")
 	}
 
 	teardown()

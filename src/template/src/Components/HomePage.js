@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import 'whatwg-fetch'
 import config from '../config/appConfig'
 import time from './../utils/time.js'
+import ReactLoading from 'react-loading'
 
 class Home extends Component {
 
@@ -128,10 +129,10 @@ class Home extends Component {
 
         return (
             <div className="container ">
-                <div className="row justify-content-md-center">
-                        <div className="col my-5">
+                <div className="row justify-content-md-center home-panel">
+                        <div className="col-lg-6 col-sm-12 my-5">
                             <div className="text-center h1">
-                                You are working for
+                                Work Hours
                             </div>
                             <div className="text-center clock">
                                 {s}
@@ -143,30 +144,30 @@ class Home extends Component {
                             </div>
                         </div>
 
-                    <div className="col my-5">
+                    <div className="col-lg-6 col-sm-12 my-5 ">
                         <div className="text-center h3">
                             This day in this month
                         </div>
                         <div className="text-center clock">
-                            {this.state.thisDayWork ? this.state.thisDayWork : 0} hr
+                            {this.state.thisDayWork !== undefined ? `${this.state.thisDayWork} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
                 </div>
-                <div className="row justify-content-md-center">
-                    <div className="col my-5">
+                <div className="row justify-content-md-center home-panel">
+                    <div className="col-lg-6 col-sm-12 my-5 col-xs-6">
                         <div className="text-center h3">
                             Work hour for this Week
                         </div>
                         <div className="text-center clock">
-                            {this.state.hourPerWeek ? this.state.hourPerWeek : 0} hr
+                            {this.state.hourPerWeek !== undefined ? `${this.state.hourPerWeek} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
-                    <div className="col my-5">
+                    <div className="col-lg-6 col-sm-12 my-5 ">
                         <div className="text-center h3">
                             Work hour for this Month
                         </div>
                         <div className="text-center clock">
-                            {this.state.hourPerMonth ? this.state.hourPerMonth : 0} hr
+                            {this.state.hourPerMonth !== undefined ? `${this.state.hourPerMonth} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
                 </div>
@@ -174,5 +175,4 @@ class Home extends Component {
         )
     }
 }
-
 export default Home
