@@ -128,9 +128,10 @@ class Home extends Component {
         ${(hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(min).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${(sec).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}`
 
         return (
-            <div className="container ">
-                <div className="row justify-content-md-center home-panel">
-                        <div className="col-lg-6 col-sm-12 my-5">
+            <div className="container mt-5">
+
+                <div className="row justify-content-md-center">
+                        <div className="col-lg-6 col-sm-12 home-panel">
                             <div className="text-center h1">
                                 Work Hours
                             </div>
@@ -144,33 +145,34 @@ class Home extends Component {
                             </div>
                         </div>
 
-                    <div className="col-lg-6 col-sm-12 my-5 ">
+                    <div className="col-lg-6 col-sm-12 home-panel">
                         <div className="text-center h3">
                             This day in this month
                         </div>
-                        <div className="text-center clock">
-                            {this.state.thisDayWork !== undefined ? `${this.state.thisDayWork} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
+                        <div className="d-flex justify-content-center pt-5 clock">
+                            {this.state.thisDayWork !== undefined ? `${this.state.thisDayWork} hr.` : <ReactLoading className="" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
                 </div>
-                <div className="row justify-content-md-center home-panel">
-                    <div className="col-lg-6 col-sm-12 my-5 col-xs-6">
+                <div className="row justify-content-md-center">
+                    <div className="col-lg-6 col-sm-12 home-panel">
                         <div className="text-center h3">
                             Work hour for this Week
                         </div>
-                        <div className="text-center clock">
-                            {this.state.hourPerWeek !== undefined ? `${this.state.hourPerWeek} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
+                        <div className="d-flex justify-content-center pt-5 clock">
+                            {this.state.hourPerWeek !== undefined ? `${this.state.hourPerWeek} hr.` : <ReactLoading className="" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
-                    <div className="col-lg-6 col-sm-12 my-5 ">
+                    <div className="col-lg-6 col-sm-12 home-panel">
                         <div className="text-center h3">
                             Work hour for this Month
                         </div>
-                        <div className="text-center clock">
-                            {this.state.hourPerMonth !== undefined ? `${this.state.hourPerMonth} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
+                        <div className="d-flex justify-content-center pt-5 clock">
+                            {this.state.hourPerMonth !== undefined ? `${this.state.hourPerMonth} hr.` : <ReactLoading className="" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
                 </div>
+                
             </div >
         )
     }
