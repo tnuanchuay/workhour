@@ -4637,7 +4637,7 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdi
   dependencies:
     minimist "0.0.8"
 
-moment@^2.18.1, moment@~2.18.0:
+moment@^2.10.6, moment@^2.18.1, moment@~2.18.0:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
@@ -5685,6 +5685,13 @@ react-bootstrap@^0.31.2:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
+react-calendar-component@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-calendar-component/-/react-calendar-component-1.2.2.tgz#9069af5e236f0d57ebe6eb232f3608c481756211"
+  dependencies:
+    moment "^2.10.6"
+    prop-types "^15.5.8"
+
 react-chartjs-2@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-2.6.2.tgz#3631b5f79dce494ea1ea87f011389a540782223b"
@@ -5748,6 +5755,10 @@ react-error-overlay@^1.0.10:
     react-dev-utils "^3.1.0"
     settle-promise "1.0.0"
     source-map "0.5.6"
+
+react-loading@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.1.4.tgz#b329ff2b870f1dc26c7068e91a1574f7dda27e67"
 
 react-overlays@^0.7.0:
   version "0.7.0"

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import 'whatwg-fetch'
 import config from '../config/appConfig'
-import { Bar } from 'react-chartjs-2'
 import time from './../utils/time.js'
-
-const daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thuesday", "Friday", "Saturday"]
+import ReactLoading from 'react-loading'
 
 class Home extends Component {
 
@@ -14,7 +12,7 @@ class Home extends Component {
         let startTime = this.cookies.get("start")
         this.state = { isRunning: startTime ? true : false, data: [0, 0, 0, 0, 0, 0, 0], session: props.session }
         if (this.state.isRunning) {
-                this.state.startTime =  new Date(parseInt(startTime, 10)),
+                this.state.startTime =  new Date(parseInt(startTime, 10))
                 this.state.runingInterval =  setInterval(() => {
                     this.setState({})
                 }, 1000)
@@ -70,6 +68,7 @@ class Home extends Component {
                 let thisDayWork = workPerDate.filter((value, index) => {
                     if (value.date.getDay() === today.getDay())
                         return value
+                    return undefined
                 }).reduce((sum, value, index, array) => {
                     return sum += Math.round(value.diff / 3600000 * 100) / 100 / array.length
                 }, 0)
@@ -130,10 +129,10 @@ class Home extends Component {
 
         return (
             <div className="container ">
-                <div className="row justify-content-md-center">
-                        <div className="col my-5">
+                <div className="row justify-content-md-center home-panel">
+                        <div className="col-lg-6 col-sm-12 my-5">
                             <div className="text-center h1">
-                                You are working for
+                                Work Hours
                             </div>
                             <div className="text-center clock">
                                 {s}
@@ -145,30 +144,30 @@ class Home extends Component {
                             </div>
                         </div>
 
-                    <div className="col my-5">
+                    <div className="col-lg-6 col-sm-12 my-5 ">
                         <div className="text-center h3">
                             This day in this month
                         </div>
                         <div className="text-center clock">
-                            {this.state.thisDayWork ? this.state.thisDayWork : 0} hr
+                            {this.state.thisDayWork !== undefined ? `${this.state.thisDayWork} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
                 </div>
-                <div className="row justify-content-md-center">
-                    <div className="col my-5">
+                <div className="row justify-content-md-center home-panel">
+                    <div className="col-lg-6 col-sm-12 my-5 col-xs-6">
                         <div className="text-center h3">
                             Work hour for this Week
                         </div>
                         <div className="text-center clock">
-                            {this.state.hourPerWeek ? this.state.hourPerWeek : 0} hr
+                            {this.state.hourPerWeek !== undefined ? `${this.state.hourPerWeek} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
-                    <div className="col my-5">
+                    <div className="col-lg-6 col-sm-12 my-5 ">
                         <div className="text-center h3">
                             Work hour for this Month
                         </div>
                         <div className="text-center clock">
-                            {this.state.hourPerMonth ? this.state.hourPerMonth : 0} hr
+                            {this.state.hourPerMonth !== undefined ? `${this.state.hourPerMonth} hr.` : <ReactLoading className="loadder" type="spinningBubbles" color="#444" />}
                         </div>
                     </div>
                 </div>
@@ -176,5 +175,4 @@ class Home extends Component {
         )
     }
 }
-
 export default Home

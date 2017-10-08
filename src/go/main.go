@@ -13,6 +13,7 @@ import (
 )
 
 const CONFIGFILE = "./config/config.json"
+const LOGPATH = "./workhour.log"
 
 func main() {
 	config := loadConfig(CONFIGFILE)
@@ -66,9 +67,9 @@ func session(router *fasthttprouter.Router, appRepository AppRepository) Middlew
 }
 
 func create_controller(appRepository AppRepository) (AppController) {
-	authController := controller.AuthController{}.Create(appRepository.User, appRepository.Session)
-	sapiController := controller.SAPIController{}.Create(appRepository.Work)
-	workController := controller.WorkController{}.Create(appRepository.Work)
+	authController := controller.AuthController{}.Create(appRepository.User, appRepository.Session, LOGPATH)
+	sapiController := controller.SAPIController{}.Create(appRepository.Work, LOGPATH)
+	workController := controller.WorkController{}.Create(appRepository.Work, LOGPATH)
 	return AppController{authController, sapiController, workController}
 }
 
@@ -80,6 +81,7 @@ func create_route(router *fasthttprouter.Router, appController AppController) {
 	router.POST("/api/auth", appController.AuthController.Auth)
 	router.GET("/api/average", appController.SAPIController.API_AverageWorkHourPerWeek)
 	router.POST("/api/work", appController.WorkController.WorkDone)
+	router.GET("/api/work", appController.WorkController.GetWorkData)
 	router.NotFound = func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
 		fullPathToRedirect := fmt.Sprintf("/#!%s", path)

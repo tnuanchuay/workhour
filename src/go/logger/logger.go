@@ -10,12 +10,12 @@ import (
 const pattern = "[%s][%s]:\t%s"
 
 type Logger struct{
-	path string
+	Path string
 }
 
 func (Logger)Create(path string) Logger{
 	logger := Logger{}
-	logger.path = path
+	logger.Path = path
 	return logger
 }
 
@@ -57,7 +57,7 @@ func createMessage(lg string, level string) string {
 }
 
 func (this Logger) write (lg string){
-	err := ioutil.WriteFile(this.path, []byte(lg), 0644)
+	err := ioutil.WriteFile(this.Path, []byte(lg), 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

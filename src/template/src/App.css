@@ -30,3 +30,59 @@ body {
 .clock{
   font-size: 600%;
 }
+
+.react-calendar-heatmap text {
+  font-size: 9px;
+  fill: #aaa;
+}
+
+.react-calendar-heatmap rect:hover {
+  stroke: #555;
+  stroke-width: 1px;
+}
+
+/*
+ * Default color scale
+ */
+
+.react-calendar-heatmap .color-empty {
+  fill: #eeeeee;
+}
+
+.react-calendar-heatmap .color-filled {
+  fill: #8cc665;
+}
+
+.react-calendar-heatmap .color-scale-1 { fill: #d6e685; }
+.react-calendar-heatmap .color-scale-2 { fill: #8cc665; }
+.react-calendar-heatmap .color-scale-3 { fill: #44a340; }
+.react-calendar-heatmap .color-scale-4 { fill: #1e6823; }
+
+.table td{
+  text-align: center;   
+}
+
+.calendar-date-text{
+  font-size: 80%;
+  color: #222
+}
+
+.loadder{
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  margin-left: -50px; /* margin is -0.5 * dimension */
+  margin-top: -25px; 
+}
+
+svg.loadder{
+  display: block;
+  margin: auto;
+  margin-top: 50%;
+}
+
+div.home-panel{
+  height: 300px;
+}

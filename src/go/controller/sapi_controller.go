@@ -4,7 +4,6 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/tspn/workhour/src/go/repository"
 	"encoding/json"
-	"log"
 	"github.com/tspn/workhour/src/go/model"
 )
 
@@ -13,8 +12,10 @@ type SAPIController struct{
 	WorkRepository	repository.WorkRepository
 }
 
-func (SAPIController)Create(workRepository repository.WorkRepository)*SAPIController{
-	return &SAPIController{WorkRepository:workRepository}
+func (SAPIController)Create(workRepository repository.WorkRepository, logPath string)*SAPIController{
+	instance := &SAPIController{WorkRepository:workRepository}
+	instance.Logger.Path = logPath
+	return instance
 }
 
 func (this SAPIController) API_AverageWorkHourPerWeek(ctx *fasthttp.RequestCtx){
@@ -27,12 +28,16 @@ func (this SAPIController) API_AverageWorkHourPerWeek(ctx *fasthttp.RequestCtx){
 		"session":string(sessionId),
 	}).Limit(30).All(&works)
 
+	if err != nil {
+		this.Logger.Error(err.Error())
+	}
+
 	res, err := json.Marshal(map[string]interface{}{
 		"data" : works,
 	})
 
 	if err != nil{
-		log.Fatal(err)
+		this.Logger.Error(err.Error())
 		ctx.Error(err.Error(), fasthttp.StatusServiceUnavailable)
 	}else{
 		ctx.Write(res)
