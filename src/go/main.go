@@ -13,7 +13,7 @@ import (
 )
 
 const CONFIGFILE = "./config/config.json"
-const LOGPATH = "./workhour.log"
+const LOGPATH = "./log/workhour.log"
 
 func main() {
 	config := loadConfig(CONFIGFILE)
