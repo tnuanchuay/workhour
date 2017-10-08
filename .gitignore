@@ -1,3 +1,4 @@
 .idea
 src/go/config/config.json
+node_modules
 *.log
