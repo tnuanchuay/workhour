@@ -16,7 +16,7 @@ class Navbar extends Component {
 
     logoutButton() {
         if (this.cookies.get("SESSIONID") !== undefined) {
-            return (<div className="navbar-nav ml-auto">
+            return (<div className="navbar-nav">
                 <li className="nav-item">
                     <a className="nav-link active" role="button" onClick={this.logout.bind(this)}>Logout</a>
                 </li>
@@ -28,17 +28,27 @@ class Navbar extends Component {
 
     render() {
         let menu = this.createMenu()
+        var collapseClass = "collapse navbar-collapse " + (this.state.collapsed ? "show" : "")
         return (
             <nav className="navbar fixed-top navbar-inverse bg-inverse navbar-toggleable-md navbar-light bg-faded">
+                <button className="navbar-toggler navbar-toggler-right" type="button" onClick={this.setCollapse.bind(this)}>
+                    <span className="navbar-toggler-icon"></span>
+                </button>
                 <Link className="navbar-brand" to="/" onClick={this.setActive.bind(this, "Home")}>{this.brand}</Link>
-                <div className="collapse navbar-collapse">
+                <div className={collapseClass}>
                     <ul className="navbar-nav mr-auto">
                         {menu}
                     </ul>
+                    {this.logoutButton()}
                 </div>
-                {this.logoutButton()}
             </nav>
         )
+    }
+
+    setCollapse() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        })
     }
 
     setActive(name) {
@@ -46,6 +56,7 @@ class Navbar extends Component {
             item.name === name ? item.isActive = true : item.isActive = false
             return item
         })
+        console.log(newState)
         this.setState(newState)
     }
 

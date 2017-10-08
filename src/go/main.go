@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
+
+	"github.com/buaazp/fasthttprouter"
+	"github.com/tspn/workhour/src/go/controller"
 	"github.com/tspn/workhour/src/go/db"
 	"github.com/tspn/workhour/src/go/repository"
-	"github.com/tspn/workhour/src/go/controller"
-	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
-	"fmt"
-	"log"
 )
 
 const CONFIGFILE = "./config/config.json"
@@ -35,7 +36,7 @@ func main() {
 	log.Println(fasthttp.ListenAndServe(fmt.Sprintf(":%d", config.Port), cors.Handler))
 }
 
-func session(router *fasthttprouter.Router, appRepository AppRepository) Middleware{
+func session(router *fasthttprouter.Router, appRepository AppRepository) Middleware {
 	var session Middleware
 	session.Next = router.Handler
 	session.Function = func(m *Middleware, ctx *fasthttp.RequestCtx) {
@@ -66,7 +67,7 @@ func session(router *fasthttprouter.Router, appRepository AppRepository) Middlew
 	return session
 }
 
-func create_controller(appRepository AppRepository) (AppController) {
+func create_controller(appRepository AppRepository) AppController {
 	authController := controller.AuthController{}.Create(appRepository.User, appRepository.Session, LOGPATH)
 	sapiController := controller.SAPIController{}.Create(appRepository.Work, LOGPATH)
 	workController := controller.WorkController{}.Create(appRepository.Work, LOGPATH)
@@ -116,17 +117,17 @@ func createRepository(database db.Database) AppRepository {
 		Session: sessionRepository,
 		Work:    workRepository,
 		User:    userRepository,
-		}
+	}
 }
 
-func loadConfig(filename string) AppConfig{
+func loadConfig(filename string) AppConfig {
 	b, err := ioutil.ReadFile(filename)
-	if err != nil{
+	if err != nil {
 		panic("Cannot read config file")
 	}
 	config := AppConfig{}
 	err = json.Unmarshal(b, &config)
-	if err != nil{
+	if err != nil {
 		panic("Cannot parse json file to config")
 	}
 
