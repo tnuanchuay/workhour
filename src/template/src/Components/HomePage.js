@@ -106,7 +106,7 @@ class Home extends Component {
                 clearInterval(this.state.runingInterval)
                 state.runingInterval = null
             }).catch((err) => {
-                console.log(err)
+            
                 alert(err)
             })
             this.cookies.remove("start")

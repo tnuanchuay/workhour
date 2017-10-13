@@ -56,7 +56,6 @@ class Navbar extends Component {
             item.name === name ? item.isActive = true : item.isActive = false
             return item
         })
-        console.log(newState)
         this.setState(newState)
     }
 
