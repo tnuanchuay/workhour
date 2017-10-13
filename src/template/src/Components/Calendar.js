@@ -31,7 +31,6 @@ class Calendar extends Component {
             if (this.state.data) {
                 for (let j = 0; j < this.state.data.length; j++) {
                     if (new Date(this.state.data[j].StartTime).getDate() === (i + 1)) {
-                        console.log(this.state.data[j].StartTime)
                         hour = Math.round((new Date(this.state.data[j].EndTime) - new Date(this.state.data[j].StartTime)) / 3600000 * 100) / 100
                     }
                 }
@@ -42,7 +41,7 @@ class Calendar extends Component {
         //build first week
         var needmore = firstday.getDay()
         for (let i = 0; i < needmore; i++) {
-            elementOfDay.unshift(<DateBlock key={i} date={this.getDayOfMonth(new Date(now.getFullYear(), now.getMonth() - 1)) - i} />)
+            elementOfDay.unshift(<DateBlock key={0 - (i + 1)} date={this.getDayOfMonth(new Date(now.getFullYear(), now.getMonth() - 1)) - i} />)
         }
 
         let weekSeparation = []
@@ -114,14 +113,14 @@ class DateBlock extends Component {
         super(props)
         let data = props.hour
         if (props.data)
-            data = 1
+            data = undefined
         this.state = { date: props.date, data: data }
     }
     render() {
         return (
             <td className="red">
-                <div className="">
-                    {this.state.data}
+                <div className="h5">
+                    {!this.state.data ? "-" : this.state.data}
                 </div>
                 <div className={"calendar-date-text text-right"}>
                     <span className="text-circle">{this.state.date}</span >
